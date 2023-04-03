@@ -1,6 +1,6 @@
 # Number Guess Database & Bash Script Project
 
-This project is a database for a number guess game using PostgreSQL that tracks user data, its games played and the best score. Additionally, a Bash script has been created to interact with the game and play it.
+This project use a database using PostgreSQL for a number guess game bash script that tracks user data, the games played and the best score.
 
 
 ## Database Tables
@@ -30,4 +30,4 @@ There are more features beyond the scope of this readme.
 
 ## Conclusion
 
-This number guess database project demonstrates the use of PostgreSQL for storing and managing user data. Also, the hability to relate the tables according to the primary and foreign key. The Bash script provides a convenient way to interact with the database when the user plays the game and perform various tasks.
+This number guess database project demonstrates the use of PostgreSQL for storing and managing user data. Also, the hability to relate the tables according to the primary and foreign key.
