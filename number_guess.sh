@@ -2,13 +2,27 @@
 
 PSQL="psql -U freecodecamp -d number_guess -t --no-align -c"
 
+PRINT () {
+  if [[ $2 == 'success' ]]; then
+    echo -e "\033[32m$1\033[0m"
+    elif [[ $2 == 'warning' ]]; then
+    echo -e "\033[33m$1\033[0m"
+    elif [[ $2 == 'error' ]]; then
+    echo -e "\033[31m$1\033[0m"
+    else
+    echo -e "$1"
+  fi
+}
+
+
 GUESS_SECRET_NUMBER () {
+  echo -e "\n~~~~~~~~~~~~~~~~~~~~~~~~\n~ Number guessing game ~\n~~~~~~~~~~~~~~~~~~~~~~~~\n"
   echo "Enter your username:"
   read NAME
   USER_INFO="$($PSQL "SELECT * FROM users FULL JOIN games USING(user_id) WHERE name = '$NAME'")"
 
   if [[ -z $USER_INFO ]]; then
-    echo -n "Welcome, $NAME! It looks like this is your first time here."
+    echo -e "\nWelcome, \033[32m$NAME\033[0m! It looks like this is your first time here."
     echo "$($PSQL "INSERT INTO users(name) VALUES('$NAME')" > /dev/null)"
 
     USER_ID="$($PSQL "SELECT user_id FROM users WHERE name = '$NAME'")"
@@ -16,24 +30,24 @@ GUESS_SECRET_NUMBER () {
 
     else
       echo $USER_INFO | while IFS='|' read USER_ID  NAME  GAMES_PLAYED  BEST_GAME; do
-        echo "Welcome back, $NAME! You have played $GAMES_PLAYED games, and your best game took $(($BEST_GAME + 0)) guesses."
+        echo -e "\nWelcome back, \033[32m$NAME\033[0m! You have played \033[32m$GAMES_PLAYED\033[0m games, and your best game took \033[32m$(($BEST_GAME + 0))\033[0m guesses."
       done
   fi
 
-  SECRET_NUMBER=$(($RANDOM%1000 + 1))
-  echo "Guess the secret number between 1 and 1000:"
+  SECRET_NUMBER=$(($RANDOM%1000 + 1))   
+  echo -e "\n\n----------------------------------------------\n- Guess the secret number between 1 and 1000 -\n----------------------------------------------\n"
 
   while true; do
     read USER_INTENT
 
     if [[ ! $USER_INTENT =~ ^[0-9]+$ ]]; then
-      echo "That is not an integer, guess again:"
+      PRINT "That is not an integer, guess again:" "error"
       continue
     fi
     
     ((NUMBER_GUESSES++))
     if [[ $USER_INTENT -eq $SECRET_NUMBER ]]; then
-      echo "You guessed it in $NUMBER_GUESSES tries. The secret number was $SECRET_NUMBER. Nice job!"
+      echo -e "You guessed it in $NUMBER_GUESSES tries. The secret number was \033[32m$SECRET_NUMBER\033[0m. Nice job!"
       
       if [[ $USER_INFO ]]; then
         echo $USER_INFO | while IFS='|' read USER_ID  _  GAMES_PLAYED  BEST_GAME; do
